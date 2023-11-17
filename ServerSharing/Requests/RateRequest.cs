@@ -43,7 +43,7 @@ namespace ServerSharing
                     UPSERT INTO `{Tables.Ratings}` (user_id, id, rating)
                     VALUES ($user_id, $id, $rating);
 
-                    $avg_rating = (SELECT CAST(AVG(ratings.rating) AS float?)
+                    $avg_rating = (SELECT CAST(AVG(ratings.rating) * 10000 AS Uint32)
                     FROM `{Tables.Ratings}` VIEW idx_id ratings
                     WHERE ratings.id = $id);
 

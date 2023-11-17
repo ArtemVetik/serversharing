@@ -4,7 +4,7 @@ using ServerSharing.Data;
 namespace ServerSharing.Tests
 {
     [TestFixture]
-    public class Test_004_LoadImageTests
+    public class Test_003_LoadImageTests
     {
         [OneTimeSetUp]
         public async Task Setup()
@@ -19,10 +19,10 @@ namespace ServerSharing.Tests
 
             var response = await CloudFunction.Post(Request.Create("LOAD_IMAGE", "test_load_user", id));
 
-            Assert.True(response.IsSuccess, $"{response.StatusCode}, {response.ReasonPhrase}");
+            Assert.That(response.IsSuccess, Is.True, $"{response.StatusCode}, {response.ReasonPhrase}");
 
             var image = Convert.FromBase64String(response.Body);
-            Assert.True(Enumerable.SequenceEqual(image, new byte[] { 255, 0, 255 }), $"Expected: [255, 0, 255], But was: {string.Join(", ", image)}");
+            Assert.That(Enumerable.SequenceEqual(image, new byte[] { 255, 0, 255 }), Is.True, $"Expected: [255, 0, 255], But was: {string.Join(", ", image)}");
         }
     }
 }

@@ -8,8 +8,6 @@ namespace ServerSharing.Tests
     [TestFixture]
     public class Test_001_UploadTests
     {
-        private readonly string _userName = "test_user";
-
         private UploadData _uploadData;
 
         [OneTimeSetUp]
@@ -24,82 +22,56 @@ namespace ServerSharing.Tests
                     Name = "Joe",
                     Description = "My description",
                 },
-                Image = new byte[] { },
+                Image = new byte[] { 0, 1, 2 },
                 Data = Encoding.UTF8.GetBytes("some_data"),
             };
         }
 
         [Test]
-        public async Task Upload_001_CorrectJson_ShouldSuccess()
+        public async Task Upload_CorrectJson_ShouldSuccess()
         {
-            var response = await CloudFunction.Post(Request.Create("UPLOAD", _userName, JsonConvert.SerializeObject(_uploadData)));
+            var response = await CloudFunction.Post(Request.Create("UPLOAD", "test_user", JsonConvert.SerializeObject(_uploadData)));
 
-            Assert.True(response.IsSuccess, $"{response.StatusCode}, {response.ReasonPhrase}");
-
-            var records = await SelectAll();
-            Assert.That(records.Count, Is.EqualTo(1));
+            Assert.That(response.IsSuccess, Is.True);
+            Assert.That(response.Body, Is.Not.Null);
         }
 
         [Test]
-        public async Task Upload_002_EmptyJson_ShouldError()
+        public async Task Upload_EmptyJson_ShouldError()
         {
-            var response = await CloudFunction.Post(Request.Create("UPLOAD", _userName, "{}"));
-            Assert.False(response.IsSuccess, $"{response.StatusCode}, {response.ReasonPhrase}");
+            var response = await CloudFunction.Post(Request.Create("UPLOAD", "test_user", "{}"));
+
+            Assert.That(response.IsSuccess, Is.False);
         }
 
         [Test]
-        public async Task Upload_003_WrongJsonRecord_ShouldNotSuccess()
+        public async Task Upload_WrongJson_ShouldNotSuccess()
         {
-            var response = await CloudFunction.Post(Request.Create("UPLOAD", _userName, "abracadabra"));
-            Assert.False(response.IsSuccess, $"{response.StatusCode}, {response.ReasonPhrase}");
+            var response = await CloudFunction.Post(Request.Create("UPLOAD", "test_user", "abracadabra"));
 
-            var records = await SelectAll();
-            Assert.That(records.Count, Is.EqualTo(1));
+            Assert.That(response.IsSuccess, Is.False);
         }
 
         [Test]
-        public async Task Upload_004_SameRecord_IdMustBeDifferent()
+        public async Task Upload_SameRecord_IdMustBeDifferent()
         {
-            var response = await CloudFunction.Post(Request.Create("UPLOAD", _userName, JsonConvert.SerializeObject(_uploadData)));
+            var response1 = await CloudFunction.Post(Request.Create("UPLOAD", "test_user", JsonConvert.SerializeObject(_uploadData)));
+            var response2 = await CloudFunction.Post(Request.Create("UPLOAD", "test_user", JsonConvert.SerializeObject(_uploadData)));
 
-            Assert.True(response.IsSuccess, $"{response.StatusCode}, {response.ReasonPhrase}");
-
-            var records = await SelectAll();
-
-            Assert.That(records.Count, Is.EqualTo(2));
-            Assert.That(records[0].Id, Is.Not.EqualTo(records[1].Id));
+            Assert.That(response1.IsSuccess, Is.True);
+            Assert.That(response2.IsSuccess, Is.True);
+            Assert.That(response1.Body != response2.Body);
         }
 
         [Test]
-        public async Task Upload_005_OtherUserSameRecord_AllIdMustBeDifferent()
+        public async Task Upload_OtherUserSameRecord_AllIdMustBeDifferent()
         {
-            var response = await CloudFunction.Post(Request.Create("UPLOAD", _userName + "_2", JsonConvert.SerializeObject(_uploadData)));
+            var response1 = await CloudFunction.Post(Request.Create("UPLOAD", "test_user", JsonConvert.SerializeObject(_uploadData)));
+            var response2 = await CloudFunction.Post(Request.Create("UPLOAD", "test_user_2", JsonConvert.SerializeObject(_uploadData)));
 
-            Assert.True(response.IsSuccess, $"{response.StatusCode}, {response.ReasonPhrase}");
-
-            var records = await SelectAll();
-
-            Assert.That(records.Count, Is.EqualTo(3));
-
-            for (int i = 0; i < records.Count; i++)
-                for (int j = i + 1; j < records.Count; j++)
-                    Assert.That(records[i].Id, Is.Not.EqualTo(records[j].Id));
-        }
-
-        private async Task<List<SelectResponseData>> SelectAll()
-        {
-            var response = await CloudFunction.Post(Request.Create("SELECT", _userName, JsonConvert.SerializeObject(new SelectRequestBody()
-            {
-                EntryType = EntryType.All,
-                OrderBy = new SelectRequestBody.SelectOrderBy[] { new SelectRequestBody.SelectOrderBy() { Sort = Sort.Date, Order = Order.Desc } },
-                Limit = 100,
-                Offset = 0,
-            })));
-
-            if (response.IsSuccess == false)
-                throw new InvalidOperationException($"Select error: {response}");
-
-            return JsonConvert.DeserializeObject<List<SelectResponseData>>(response.Body);
+            Assert.That(response1.IsSuccess, Is.True);
+            Assert.That(response2.IsSuccess, Is.True);
+            Assert.That(response1.Body != response2.Body);
         }
     }
 }

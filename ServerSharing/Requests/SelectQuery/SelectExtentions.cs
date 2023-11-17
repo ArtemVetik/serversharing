@@ -26,7 +26,7 @@ namespace ServerSharing
                 Downloads = downloadsCount.TypeId == YdbTypeId.OptionalType ? (downloadsCount.GetOptionalUint32() ?? 0) : downloadsCount.GetUint32(),
                 Likes = likesCount.TypeId == YdbTypeId.OptionalType ? (likesCount.GetOptionalUint32() ?? 0) : likesCount.GetUint32(),
                 RatingCount = ratingsCount.TypeId == YdbTypeId.OptionalType ? (ratingsCount.GetOptionalUint32() ?? 0) : ratingsCount.GetUint32(),
-                RatingAverage = ratingsAverage.TypeId == YdbTypeId.OptionalType ? (ratingsAverage.GetOptionalFloat() ?? 0) : ratingsAverage.GetFloat(),
+                RatingAverage = ratingsAverage.TypeId == YdbTypeId.OptionalType ? (ratingsAverage.GetOptionalUint32() ?? 0) : ratingsAverage.GetUint32(),
                 MyRating = myRating.GetOptionalInt8(),
                 MyLike = myLike.GetOptional() != null && myLike.GetOptional().GetBool(),
                 MyDownload = myDownload.GetOptional() != null && myDownload.GetOptional().GetBool(),
@@ -34,23 +34,14 @@ namespace ServerSharing
             };
         }
 
-        public static SelectRequestBody ParseSelectRequestBody(this  string body)
+        public static SelectRequestBody ParseSelectRequestBody(this string body)
         {
             try
             {
                 var selectData = JsonConvert.DeserializeObject<SelectRequestBody>(body);
 
-                if (Enum.IsDefined(typeof(EntryType), selectData.EntryType) == false)
-                    throw new ArgumentException($"Request is missing {nameof(selectData.EntryType)} parameter");
-
-                foreach (var orderBy in selectData.OrderBy)
-                {
-                    if (Enum.IsDefined(typeof(Sort), orderBy.Sort) == false)
-                        throw new ArgumentException($"Request is missing {nameof(orderBy.Sort)} parameter");
-
-                    if (Enum.IsDefined(typeof(Order), orderBy.Order) == false)
-                        throw new ArgumentException($"Request is missing {nameof(orderBy.Order)} parameter");
-                }
+                if (Enum.IsDefined(typeof(Sort), selectData.Parameters.Sort) == false)
+                    throw new ArgumentException($"Request is missing {nameof(selectData.Parameters.Sort)} parameter");
 
                 return selectData;
             }

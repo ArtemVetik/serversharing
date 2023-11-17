@@ -3,6 +3,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Added some `SortParameters` for the `SELECT` query. Now the sorting of the `SELECT` query is tightly constrained.
+
+### Changed
+
+- Changed the structure of the `SELECT` query. Now `SELECT` query is split into two: `SELECT` and `SELECT_SELF`.
+- The `rating_avg` attribute has been changed from `float` type to `Uint32`.
+- Split `EntryType` into `CountEntryType` and `SelectEntryType`.
+- Partially rewritten some of the tests.
+
+### Fixed
+
+- The `UPLOAD` query sets the metric attributes to 0 instead of null.
+
 ## [2.0.1] - 2023-10-29
 
 ### Added

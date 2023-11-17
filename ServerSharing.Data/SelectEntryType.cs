@@ -4,9 +4,8 @@ using Newtonsoft.Json.Converters;
 namespace ServerSharing.Data
 {
     [JsonConverter(typeof(StringEnumConverter))]
-    public enum EntryType
+    public enum SelectEntryType
     {
-        All,
         Downloaded,
         Uploaded,
         Liked,

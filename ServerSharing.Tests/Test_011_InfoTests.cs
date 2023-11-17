@@ -5,7 +5,7 @@ using ServerSharing.Data;
 namespace ServerSharing.Tests
 {
     [TestFixture]
-    public class Test_016_InfoTests
+    public class Test_011_InfoTests
     {
         [SetUp]
         public async Task Setup()

@@ -5,7 +5,7 @@ using ServerSharing.Data;
 namespace ServerSharing.Tests
 {
     [TestFixture]
-    public class Test_020_SelectMetaData
+    public class Test_014_SelectMetaData
     {
         [SetUp]
         public async Task Setup()
@@ -27,10 +27,12 @@ namespace ServerSharing.Tests
 
             var selectRequest = new SelectRequestBody()
             {
-                EntryType = EntryType.All,
-                OrderBy = new SelectRequestBody.SelectOrderBy[] { new SelectRequestBody.SelectOrderBy() { Order = Order.Desc, Sort = Sort.Date } },
-                Limit = 10,
-                Offset = 0
+                Parameters = new SelectRequestBody.SortParameters()
+                {
+                    Sort = Sort.Date,
+                    Date = DateTime.Now.AddDays(1),
+                },
+                Limit = 10
             };
 
             var response = await CloudFunction.Post(Request.Create("SELECT", "user", JsonConvert.SerializeObject(selectRequest)));
@@ -51,10 +53,12 @@ namespace ServerSharing.Tests
 
             var selectRequest = new SelectRequestBody()
             {
-                EntryType = EntryType.All,
-                OrderBy = new SelectRequestBody.SelectOrderBy[] { new SelectRequestBody.SelectOrderBy() { Order = Order.Desc, Sort = Sort.Date } },
-                Limit = 10,
-                Offset = 0
+                Parameters = new SelectRequestBody.SortParameters()
+                {
+                    Sort = Sort.Date,
+                    Date = DateTime.Now.AddDays(1),
+                },
+                Limit = 10
             };
 
             var response = await CloudFunction.Post(Request.Create("SELECT", "user", JsonConvert.SerializeObject(selectRequest)));

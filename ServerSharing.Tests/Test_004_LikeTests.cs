@@ -4,22 +4,22 @@ using ServerSharing.Data;
 namespace ServerSharing.Tests
 {
     [TestFixture]
-    public class Test_007_LikeTests
+    public class Test_004_LikeTests
     {
         [Test]
-        public async Task Like_001_CorrectId_ShouldLike()
+        public async Task Like_CorrectId_ShouldLike()
         {
             var id = await CloudFunction.Upload("test_upload", new UploadData() { Image = new byte[] { }, Data = new byte[] { } });
 
             var response = await CloudFunction.Post(Request.Create("LIKE", "some_user", id));
-            Assert.True(response.IsSuccess, $"{response.StatusCode}, {response.ReasonPhrase}");
+            Assert.That(response.IsSuccess, Is.True);
         }
 
         [Test]
-        public async Task Like_002_UnknownId_ShouldLike()
+        public async Task Like_UnknownId_ShouldLike()
         {
             var response = await CloudFunction.Post(Request.Create("LIKE", "some_user", "unknown_id"));
-            Assert.True(response.IsSuccess, $"{response.StatusCode}, {response.ReasonPhrase}");
+            Assert.That(response.IsSuccess, Is.True);
         }
     }
 }

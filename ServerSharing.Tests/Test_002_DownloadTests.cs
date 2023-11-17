@@ -5,7 +5,7 @@ using System.Text;
 namespace ServerSharing.Tests
 {
     [TestFixture]
-    public class Test_003_DownloadTests
+    public class Test_002_DownloadTests
     {
         private string _userOne1;
         private string _userTwo1;
@@ -25,42 +25,40 @@ namespace ServerSharing.Tests
         }
 
         [Test]
-        public async Task Download_001_FewUsers_SouldCorrectData()
+        public async Task Download_FewUsers_SouldCorrectData()
         {
             var response = await CloudFunction.Post(Request.Create("DOWNLOAD", "test_download_1", _userOne1));
 
-            Assert.True(response.IsSuccess, $"{response.StatusCode}, {response.ReasonPhrase}");
+            Assert.That(response.IsSuccess, Is.True);
             Assert.That(EncodeBody(response.Body), Is.EqualTo("data_userOne"));
 
             response = await CloudFunction.Post(Request.Create("DOWNLOAD", "test_download_2", _userTwo2));
 
-            Assert.True(response.IsSuccess, $"{response.StatusCode}, {response.ReasonPhrase}");
+            Assert.That(response.IsSuccess, Is.True);
             Assert.That(EncodeBody(response.Body), Is.EqualTo("data_userTwo2"));
         }
 
         [Test]
-        public async Task Download_002_TwiceDownload_SouldReturnSameData()
+        public async Task Download_TwiceDownload_SouldReturnSameData()
         {
-            var response = await CloudFunction.Post(Request.Create("DOWNLOAD", "test_download_3", _userThree1));
+            for (int i = 0; i < 2; i++)
+            {
+                var response = await CloudFunction.Post(Request.Create("DOWNLOAD", "test_download_3", _userThree1));
 
-            Assert.True(response.IsSuccess, $"{response.StatusCode}, {response.ReasonPhrase}");
-            Assert.That(EncodeBody(response.Body), Is.EqualTo("data_userThree"));
-
-            response = await CloudFunction.Post(Request.Create("DOWNLOAD", "test_download_3", _userThree1));
-
-            Assert.True(response.IsSuccess, $"{response.StatusCode}, {response.ReasonPhrase}");
-            Assert.That(EncodeBody(response.Body), Is.EqualTo("data_userThree"));
+                Assert.That(response.IsSuccess, Is.True);
+                Assert.That(EncodeBody(response.Body), Is.EqualTo("data_userThree"));
+            }
         }
 
         [Test]
-        public async Task Download_003_InvalidId_SouldBeNotSuccess()
+        public async Task Download_InvalidId_SouldNotSuccess()
         {
             var response = await CloudFunction.Post(Request.Create("DOWNLOAD", "test_download_4", "invalid_id"));
 
-            Assert.False(response.IsSuccess, $"{response.StatusCode}, {response.ReasonPhrase}");
+            Assert.That(response.IsSuccess, Is.False);
         }
 
-        private string EncodeBody(string body)
+        private static string EncodeBody(string body)
         {
             return Encoding.UTF8.GetString(Convert.FromBase64String(body));
         }

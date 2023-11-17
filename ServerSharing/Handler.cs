@@ -44,6 +44,7 @@ namespace ServerSharing
                     "LOAD_IMAGE" => new LoadImageRequest(awsClient, tableClient, request),
                     "DOWNLOAD" => new DownloadRequest(awsClient, tableClient, request),
                     "SELECT" => new SelectRequest(tableClient, request),
+                    "SELECT_SELF" => new SelectSelfRequest(tableClient, request),
                     "INFO" => new InfoRequest(tableClient, request),
                     "LIKE" => new LikeRequest(tableClient, request),
                     "DISLIKE" => new DislikeRequest(tableClient, request),

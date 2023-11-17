@@ -14,10 +14,10 @@ namespace ServerSharing
 
         protected async override Task<Response> Handle(TableClient client, Request request)
         {
-            EntryType type;
+            CountEntryType type;
             try
             {
-                type = JsonConvert.DeserializeObject<EntryType>(request.body);
+                type = JsonConvert.DeserializeObject<CountEntryType>(request.body);
             }
             catch (Exception exception)
             {
@@ -28,10 +28,10 @@ namespace ServerSharing
             {
                 var queryBody = type switch
                 {
-                    EntryType.All => All(),
-                    EntryType.Downloaded => Downloaded(),
-                    EntryType.Uploaded => Uploaded(),
-                    EntryType.Liked => Liked(),
+                    CountEntryType.All => All(),
+                    CountEntryType.Downloaded => Downloaded(),
+                    CountEntryType.Uploaded => Uploaded(),
+                    CountEntryType.Liked => Liked(),
                     _ => throw new ArgumentOutOfRangeException(),
                 };
 

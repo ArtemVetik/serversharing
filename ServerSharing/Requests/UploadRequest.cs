@@ -67,8 +67,8 @@ namespace ServerSharing
                     DECLARE $body AS json;
                     DECLARE $date AS Datetime;
 
-                    UPSERT INTO `{Tables.Records}` (id, user_id, body, date)
-                    VALUES ($id, $user_id, $body, $date);
+                    UPSERT INTO `{Tables.Records}` (id, user_id, body, date, download_count, like_count, rating_avg, rating_count)
+                    VALUES ($id, $user_id, $body, $date, 0u, 0u, 0u, 0u);
                 ";
 
                 return await session.ExecuteDataQuery(

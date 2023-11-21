@@ -22,7 +22,7 @@ namespace ServerSharing
                                                 GROUP BY id);
 
                                 $rating = (SELECT id, CAST(COUNT(ratings.id) AS Uint32?) AS count,
-                                                        CAST(AVG(ratings.rating) AS float?) AS avg
+                                                        CAST(AVG(ratings.rating) * 10000 AS Uint32) AS avg
                                                 FROM `{Tables.Ratings}` VIEW idx_id ratings
                                                 GROUP BY id);
 

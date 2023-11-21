@@ -15,6 +15,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - The `rating_avg` attribute has been changed from `float` type to `Uint32`.
 - Split `EntryType` into `CountEntryType` and `SelectEntryType`.
 - Partially rewritten some of the tests.
+- `RatingAverage` type changed to `Uint32`.
+- The `COUNT` request returns only the number of all records.
 
 ### Fixed
 
